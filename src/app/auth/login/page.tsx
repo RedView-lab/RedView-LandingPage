@@ -33,51 +33,46 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-background">
+    <div className="flex flex-col flex-1 items-center justify-center">
       <form onSubmit={handleLogin} className="flex flex-col gap-4 w-80">
-        <Link href="/" className="text-accent text-2xl font-bold mb-4 hover:underline">
+        <Link href="/" className="text-2xl font-semibold mb-4 hover:opacity-70">
           RedView
         </Link>
-        <p className="text-foreground/50 text-xs mb-2">{">"} authentication required_</p>
 
         {error && (
-          <p className="text-error text-xs border border-error/30 bg-error/5 px-3 py-2">
-            {"> ERR: "}{error}
-          </p>
+          <p className="text-error text-sm">{error}</p>
         )}
 
-        <label className="text-foreground/50 text-xs">EMAIL</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="bg-input-bg border border-border text-foreground px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none"
-          placeholder=">_"
+          placeholder="Email"
+          className="border border-border px-3 py-2 text-sm focus:border-foreground focus:outline-none"
         />
 
-        <label className="text-foreground/50 text-xs">PASSWORD</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="bg-input-bg border border-border text-foreground px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none"
-          placeholder=">_"
+          placeholder="Password"
+          className="border border-border px-3 py-2 text-sm focus:border-foreground focus:outline-none"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="border border-accent text-accent py-2 px-4 hover:bg-accent hover:text-background transition-colors font-mono text-sm disabled:opacity-50 mt-2"
+          className="bg-foreground text-background py-2 px-4 text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
         >
-          {loading ? "> AUTHENTICATING..." : "> LOGIN"}
+          {loading ? "Loading..." : "Login"}
         </button>
 
-        <p className="text-foreground/30 text-xs mt-4">
-          no account?{" "}
-          <Link href="/auth/signup" className="text-accent hover:underline">
-            sign up
+        <p className="text-muted text-sm mt-2">
+          No account?{" "}
+          <Link href="/auth/signup" className="text-foreground underline">
+            Sign up
           </Link>
         </p>
       </form>

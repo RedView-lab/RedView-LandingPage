@@ -34,68 +34,60 @@ export default function SignUpPage() {
 
   if (success) {
     return (
-      <div className="flex flex-col flex-1 items-center justify-center bg-background">
+      <div className="flex flex-col flex-1 items-center justify-center">
         <div className="flex flex-col gap-4 w-80">
-          <h1 className="text-accent text-2xl font-bold">RedView</h1>
-          <p className="text-accent text-sm">{">"} account created successfully</p>
-          <p className="text-foreground/50 text-xs">
-            check your email to confirm your account, then{" "}
-            <Link href="/auth/login" className="text-accent hover:underline">
-              login
-            </Link>
-          </p>
+          <h1 className="text-2xl font-semibold">RedView</h1>
+          <p className="text-sm">Account created. Check your email to confirm.</p>
+          <Link href="/auth/login" className="text-sm underline">
+            Go to login
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-background">
+    <div className="flex flex-col flex-1 items-center justify-center">
       <form onSubmit={handleSignUp} className="flex flex-col gap-4 w-80">
-        <Link href="/" className="text-accent text-2xl font-bold mb-4 hover:underline">
+        <Link href="/" className="text-2xl font-semibold mb-4 hover:opacity-70">
           RedView
         </Link>
-        <p className="text-foreground/50 text-xs mb-2">{">"} create new account_</p>
 
         {error && (
-          <p className="text-error text-xs border border-error/30 bg-error/5 px-3 py-2">
-            {"> ERR: "}{error}
-          </p>
+          <p className="text-error text-sm">{error}</p>
         )}
 
-        <label className="text-foreground/50 text-xs">EMAIL</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="bg-input-bg border border-border text-foreground px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none"
-          placeholder=">_"
+          placeholder="Email"
+          className="border border-border px-3 py-2 text-sm focus:border-foreground focus:outline-none"
         />
 
-        <label className="text-foreground/50 text-xs">PASSWORD</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="bg-input-bg border border-border text-foreground px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none"
-          placeholder=">_"
+          placeholder="Password"
+          className="border border-border px-3 py-2 text-sm focus:border-foreground focus:outline-none"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="border border-accent text-accent py-2 px-4 hover:bg-accent hover:text-background transition-colors font-mono text-sm disabled:opacity-50 mt-2"
+          className="bg-foreground text-background py-2 px-4 text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
         >
-          {loading ? "> CREATING..." : "> SIGN UP"}
+          {loading ? "Loading..." : "Sign Up"}
         </button>
 
-        <p className="text-foreground/30 text-xs mt-4">
-          already have an account?{" "}
-          <Link href="/auth/login" className="text-accent hover:underline">
-            login
+        <p className="text-muted text-sm mt-2">
+          Already have an account?{" "}
+          <Link href="/auth/login" className="text-foreground underline">
+            Login
           </Link>
         </p>
       </form>
