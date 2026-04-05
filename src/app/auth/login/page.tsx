@@ -16,7 +16,7 @@ export default function LoginPage() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -27,9 +27,10 @@ export default function LoginPage() {
       return;
     }
 
-    // Redirect to RedView App
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
-    window.location.href = appUrl;
+    const accessToken = data.session?.access_token;
+    const refreshToken = data.session?.refresh_token;
+    window.location.href = `${appUrl}#access_token=${accessToken}&refresh_token=${refreshToken}`;
   };
 
   return (

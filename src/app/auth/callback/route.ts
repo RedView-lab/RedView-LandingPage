@@ -8,10 +8,11 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error && data.session) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
-      return NextResponse.redirect(appUrl);
+      const { access_token, refresh_token } = data.session;
+      return NextResponse.redirect(`${appUrl}#access_token=${access_token}&refresh_token=${refresh_token}`);
     }
   }
 
