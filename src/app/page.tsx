@@ -8,6 +8,10 @@ export default function Home() {
           RedView
         </h1>
 
+        <p className="text-muted text-sm max-w-xs text-center">
+          High-resolution 3D terrain, LiDAR, and activity analysis platform.
+        </p>
+
         <div className="flex gap-3">
           <Link
             href="/auth/login"
@@ -22,6 +26,13 @@ export default function Home() {
             Sign Up
           </Link>
         </div>
+
+        <Link
+          href="/pricing"
+          className="text-muted text-sm hover:text-foreground transition-colors"
+        >
+          View pricing →
+        </Link>
       </main>
     </div>
   );

@@ -37,6 +37,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    /*
+     * Run middleware on auth callback and protected API routes.
+     * Excludes /api/stripe/webhook (needs raw body, no auth cookie).
+     * The landing page (/), login, signup, and pricing are public.
+     */
+    "/auth/callback",
+    "/api/stripe/checkout",
+    "/api/stripe/portal",
   ],
 };
