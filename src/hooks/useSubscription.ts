@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/lib/supabase/client";
 
 interface SubscriptionState {
   isSubscribed: boolean;
@@ -25,29 +25,67 @@ export function useSubscription(
   });
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!userId) {
-      setState((s) => ({ ...s, isLoading: false }));
+      setState({
+        isSubscribed: false,
+        isLoading: false,
+        status: null,
+        currentPeriodEnd: null,
+      });
       return;
     }
 
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    setState((s) => ({ ...s, isLoading: true }));
 
-    supabase
-      .from("user_subscription_status")
-      .select("is_subscribed, status, current_period_end")
-      .eq("user_id", userId)
-      .maybeSingle()
-      .then(({ data }) => {
+    const supabase = createClient();
+
+    const resolveSubscription = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("user_subscription_status")
+          .select("is_subscribed, status, current_period_end")
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (cancelled) return;
+
+        if (error) {
+          console.error("[landing] Failed to resolve subscription status", error);
+          setState({
+            isSubscribed: false,
+            isLoading: false,
+            status: null,
+            currentPeriodEnd: null,
+          });
+          return;
+        }
+
         setState({
           isSubscribed: data?.is_subscribed ?? false,
           isLoading: false,
           status: data?.status ?? null,
           currentPeriodEnd: data?.current_period_end ?? null,
         });
-      });
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error("[landing] Subscription bootstrap crashed", error);
+        setState({
+          isSubscribed: false,
+          isLoading: false,
+          status: null,
+          currentPeriodEnd: null,
+        });
+      }
+    };
+
+    void resolveSubscription();
+
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
 
   return state;

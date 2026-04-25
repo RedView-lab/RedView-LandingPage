@@ -4,6 +4,27 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
+const AUTH_REQUEST_TIMEOUT_MS = 15000;
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,22 +36,40 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { data, error } = await withTimeout(
+        supabase.auth.signInWithPassword({
+          email,
+          password,
+        }),
+        AUTH_REQUEST_TIMEOUT_MS,
+        "Supabase login"
+      );
 
-    if (error) {
-      setError(error.message);
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
+      const accessToken = data.session?.access_token;
+      const refreshToken = data.session?.refresh_token;
+
+      if (!accessToken || !refreshToken) {
+        throw new Error("Login succeeded but Supabase did not return a usable session.");
+      }
+
+      window.location.href = `${appUrl}#access_token=${accessToken}&refresh_token=${refreshToken}`;
+    } catch (loginError) {
+      setError(
+        loginError instanceof Error
+          ? loginError.message
+          : "Unable to reach Supabase. Please try again."
+      );
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
-    const accessToken = data.session?.access_token;
-    const refreshToken = data.session?.refresh_token;
-    window.location.href = `${appUrl}#access_token=${accessToken}&refresh_token=${refreshToken}`;
   };
 
   return (

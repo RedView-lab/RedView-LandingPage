@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/lib/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 
 export default function PricingPage() {
@@ -12,15 +12,35 @@ export default function PricingPage() {
   const { isSubscribed, isLoading: subLoading } = useSubscription(user?.id);
 
   useEffect(() => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setLoading(false);
-    });
+    let cancelled = false;
+
+    void supabase.auth
+      .getUser()
+      .then(({ data: { user }, error }) => {
+        if (cancelled) return;
+
+        if (error) {
+          console.error("[landing] Failed to resolve current user", error);
+          setUser(null);
+        } else {
+          setUser(user);
+        }
+      })
+      .catch((error) => {
+        if (cancelled) return;
+
+        console.error("[landing] User bootstrap crashed", error);
+        setUser(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleCheckout() {

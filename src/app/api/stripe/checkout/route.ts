@@ -28,9 +28,8 @@ export async function POST(request: Request) {
       user.email!
     );
 
-    // 3. Get the origin for redirect URLs
-    const origin =
-      request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL!;
+    // 3. Get the origin for redirect URLs (never trust request Origin header)
+    const origin = process.env.NEXT_PUBLIC_APP_URL!;
 
     // 4. Create a Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({

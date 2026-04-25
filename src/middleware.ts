@@ -29,8 +29,12 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refreshing the auth token
-  await supabase.auth.getUser();
+  // Refreshing the auth token — reject if session is invalid on protected routes
+  const { error } = await supabase.auth.getUser();
+  if (error) {
+    const loginUrl = new URL("/auth/login", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
 
   return supabaseResponse;
 }

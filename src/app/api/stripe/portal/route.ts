@@ -36,9 +36,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Get origin for return URL
-    const origin =
-      request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL!;
+    // 3. Get origin for return URL (never trust request Origin header)
+    const origin = process.env.NEXT_PUBLIC_APP_URL!;
 
     // 4. Create a Stripe Customer Portal session
     const portalSession = await stripe.billingPortal.sessions.create({
