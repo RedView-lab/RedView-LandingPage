@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { AuthenticatedHomeActions } from "./ui/AuthenticatedHomeActions";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
-const DEMO_URL = `${APP_URL}/?demo=1`;
 
 export default async function Home() {
   const supabase = await createClient();
@@ -31,7 +30,6 @@ export default async function Home() {
 
           <AuthenticatedHomeActions
             appUrl={APP_URL}
-            demoUrl={DEMO_URL}
             pricingHref="/pricing"
           />
         </main>
@@ -63,12 +61,6 @@ export default async function Home() {
           >
             Sign Up
           </Link>
-          <a
-            href={DEMO_URL}
-            className="border border-border px-6 py-2 text-sm hover:border-foreground transition-colors"
-          >
-            Demo
-          </a>
         </div>
 
         <Link

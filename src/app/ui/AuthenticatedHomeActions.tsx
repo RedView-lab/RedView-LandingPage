@@ -6,13 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 
 interface AuthenticatedHomeActionsProps {
   appUrl: string;
-  demoUrl: string;
   pricingHref: string;
 }
 
 export function AuthenticatedHomeActions({
   appUrl,
-  demoUrl,
   pricingHref,
 }: AuthenticatedHomeActionsProps) {
   const [loggingOut, setLoggingOut] = useState(false);
@@ -44,12 +42,6 @@ export function AuthenticatedHomeActions({
         >
           Billing & Pricing
         </Link>
-        <a
-          href={demoUrl}
-          className="border border-border px-6 py-2 text-sm hover:border-foreground transition-colors"
-        >
-          Public Demo
-        </a>
       </div>
 
       <div className="flex items-center gap-3 text-sm text-muted">
