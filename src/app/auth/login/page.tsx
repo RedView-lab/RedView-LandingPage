@@ -37,14 +37,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const supabase = createClient({
-        isSingleton: false,
-        auth: {
-          autoRefreshToken: false,
-          detectSessionInUrl: false,
-          persistSession: false,
-        },
-      });
+      const supabase = createClient({ isSingleton: false });
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
           email,
@@ -59,15 +52,11 @@ export default function LoginPage() {
         return;
       }
 
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
-      const accessToken = data.session?.access_token;
-      const refreshToken = data.session?.refresh_token;
-
-      if (!accessToken || !refreshToken) {
+      if (!data.session) {
         throw new Error("Login succeeded but Supabase did not return a usable session.");
       }
 
-      window.location.href = `${appUrl}#access_token=${accessToken}&refresh_token=${refreshToken}`;
+      window.location.href = "/";
     } catch (loginError) {
       setError(
         loginError instanceof Error
