@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 const AUTH_REQUEST_TIMEOUT_MS = 15000;
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -56,7 +57,7 @@ export default function LoginPage() {
         throw new Error("Login succeeded but Supabase did not return a usable session.");
       }
 
-      window.location.href = "/";
+      window.location.href = APP_URL;
     } catch (loginError) {
       setError(
         loginError instanceof Error

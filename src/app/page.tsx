@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { AuthenticatedHomeActions } from "./ui/AuthenticatedHomeActions";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
 
@@ -11,30 +11,7 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (user) {
-    return (
-      <div className="flex flex-1 items-center justify-center px-6">
-        <main className="flex w-full max-w-2xl flex-col gap-8 border border-border p-10">
-          <div className="flex flex-col gap-3">
-            <p className="text-xs uppercase tracking-[0.24em] text-muted">
-              RedView Home
-            </p>
-            <h1 className="text-4xl font-semibold tracking-tight">
-              Bonjour{user.email ? `, ${user.email}` : ""}
-            </h1>
-            <p className="max-w-xl text-sm text-muted">
-              Cette page est la destination post-login standard pour tous les comptes.
-              Elle ne monte jamais RedView App en arrière-plan, donc aucun moteur Mapbox
-              3D ni aucune map n&apos;est chargée tant que l&apos;utilisateur n&apos;ouvre pas explicitement l&apos;application.
-            </p>
-          </div>
-
-          <AuthenticatedHomeActions
-            appUrl={APP_URL}
-            pricingHref="/pricing"
-          />
-        </main>
-      </div>
-    );
+    redirect(APP_URL);
   }
 
   return (
