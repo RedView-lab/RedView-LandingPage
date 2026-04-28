@@ -78,6 +78,7 @@ export default function SignUpPage() {
         <div className="flex flex-col gap-4 w-80">
           <h1 className="text-2xl font-semibold">RedView</h1>
           <p className="text-sm">Account created. Check your email to confirm.</p>
+          <p className="text-sm text-muted">New accounts start on the Demo plan by default. No Stripe redirect is triggered during signup.</p>
           <Link href="/auth/login" className="text-sm underline">
             Go to login
           </Link>
@@ -125,6 +126,10 @@ export default function SignUpPage() {
         </button>
 
         <p className="text-muted text-sm mt-2">
+          Every new account starts on Demo. You can upgrade later from the subscription area.
+        </p>
+
+        <p className="text-muted text-sm">
           Already have an account?{" "}
           <Link href="/auth/login" className="text-foreground underline">
             Login

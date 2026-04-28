@@ -111,6 +111,10 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
+
+        <p className="text-muted text-xs">
+          Demo access is enabled by default after login. Stripe is only used if you upgrade later.
+        </p>
       </form>
     </div>
   );

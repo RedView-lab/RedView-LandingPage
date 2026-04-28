@@ -65,7 +65,7 @@ export function useSubscription(
         setState({
           isSubscribed: data?.is_subscribed ?? false,
           isLoading: false,
-          status: data?.status ?? null,
+          status: data?.status ?? (data?.is_subscribed ? null : "demo"),
           currentPeriodEnd: data?.current_period_end ?? null,
         });
       } catch (error) {

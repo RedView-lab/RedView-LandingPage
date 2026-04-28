@@ -9,7 +9,9 @@ export default function PricingPage() {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const { isSubscribed, isLoading: subLoading } = useSubscription(user?.id);
+  const { isSubscribed, isLoading: subLoading, status } = useSubscription(user?.id);
+  const isDemoPlan = Boolean(user && status === "demo");
+  const hasPaidSubscription = isSubscribed && !isDemoPlan;
 
   useEffect(() => {
     const supabase = createClient();
@@ -99,7 +101,11 @@ export default function PricingPage() {
             RedView Pro
           </h1>
           <p className="text-muted mt-2">
-            Unlock full access to RedView
+            {hasPaidSubscription
+              ? "Your paid RedView plan is active"
+              : isDemoPlan
+                ? "Your account starts on Demo. Upgrade only when you need a paid plan."
+                : "Unlock full access to RedView"}
           </p>
         </div>
 
@@ -125,9 +131,9 @@ export default function PricingPage() {
               href="/auth/login"
               className="block w-full text-center bg-foreground text-background py-3 text-sm font-medium hover:opacity-80 transition-opacity"
             >
-              Sign in to subscribe
+              Sign in to continue
             </Link>
-          ) : isSubscribed ? (
+          ) : hasPaidSubscription ? (
             <button
               onClick={handlePortal}
               disabled={checkoutLoading}
@@ -141,20 +147,32 @@ export default function PricingPage() {
               disabled={checkoutLoading}
               className="w-full bg-foreground text-background py-3 text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50"
             >
-              {checkoutLoading ? "Redirecting..." : "Subscribe now"}
+              {checkoutLoading
+                ? "Redirecting..."
+                : isDemoPlan
+                  ? "Upgrade from Demo"
+                  : "Subscribe now"}
             </button>
           )}
 
-          {isSubscribed && (
+          {hasPaidSubscription && (
             <p className="text-center text-sm text-muted mt-4">
               ✓ You have an active subscription
+            </p>
+          )}
+
+          {isDemoPlan && (
+            <p className="text-center text-sm text-muted mt-4">
+              ✓ Demo access is active on this account. No Stripe checkout is required for signup or login.
             </p>
           )}
         </div>
 
         {/* Footer info */}
         <p className="text-center text-xs text-muted mt-6">
-          Secure payment via Stripe. Cancel anytime.
+          {hasPaidSubscription
+            ? "Secure payment via Stripe. Cancel anytime."
+            : "Stripe is only used when you choose to upgrade from the Demo plan."}
         </p>
       </div>
     </div>

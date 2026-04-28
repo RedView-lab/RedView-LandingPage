@@ -77,12 +77,14 @@ async function getOrCreateStripeCustomer(
   userId: string,
   email: string
 ): Promise<string> {
+  const admin = getSupabaseAdmin();
+
   // Check if customer already exists in our DB
-  const { data: existing } = await getSupabaseAdmin()
+  const { data: existing } = await admin
     .from("customers")
     .select("stripe_customer_id")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   if (existing?.stripe_customer_id) {
     return existing.stripe_customer_id;
@@ -95,10 +97,15 @@ async function getOrCreateStripeCustomer(
   });
 
   // Store the mapping in Supabase
-  await getSupabaseAdmin().from("customers").upsert({
-    id: userId,
-    stripe_customer_id: customer.id,
-  });
+  await admin.from("customers").upsert(
+    {
+      id: userId,
+      stripe_customer_id: customer.id,
+    },
+    {
+      onConflict: "id",
+    }
+  );
 
   return customer.id;
 }
