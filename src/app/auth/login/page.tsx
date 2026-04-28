@@ -7,6 +7,15 @@ import Link from "next/link";
 const AUTH_REQUEST_TIMEOUT_MS = 15000;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
 
+function buildAppAuthRedirectUrl(accessToken: string, refreshToken: string): string {
+  const params = new URLSearchParams({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+
+  return `${APP_URL}#${params.toString()}`;
+}
+
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = window.setTimeout(() => {
@@ -53,11 +62,14 @@ export default function LoginPage() {
         return;
       }
 
-      if (!data.session) {
+      const accessToken = data.session?.access_token;
+      const refreshToken = data.session?.refresh_token;
+
+      if (!accessToken || !refreshToken) {
         throw new Error("Login succeeded but Supabase did not return a usable session.");
       }
 
-      window.location.href = APP_URL;
+      window.location.href = buildAppAuthRedirectUrl(accessToken, refreshToken);
     } catch (loginError) {
       setError(
         loginError instanceof Error

@@ -4,6 +4,15 @@ import { createClient } from "@/lib/supabase/server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
 
+function buildAppAuthRedirectUrl(accessToken: string, refreshToken: string): string {
+  const params = new URLSearchParams({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+
+  return `${APP_URL}#${params.toString()}`;
+}
+
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -11,6 +20,17 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (user) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const accessToken = session?.access_token;
+    const refreshToken = session?.refresh_token;
+
+    if (accessToken && refreshToken) {
+      redirect(buildAppAuthRedirectUrl(accessToken, refreshToken));
+    }
+
     redirect(APP_URL);
   }
 
