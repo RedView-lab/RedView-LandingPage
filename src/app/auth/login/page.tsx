@@ -37,7 +37,14 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const supabase = createClient();
+      const supabase = createClient({
+        isSingleton: false,
+        auth: {
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+          persistSession: false,
+        },
+      });
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
           email,

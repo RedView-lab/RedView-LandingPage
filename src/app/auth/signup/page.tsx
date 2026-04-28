@@ -38,7 +38,14 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
-      const supabase = createClient();
+      const supabase = createClient({
+        isSingleton: false,
+        auth: {
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+          persistSession: false,
+        },
+      });
       const { error } = await withTimeout(
         supabase.auth.signUp({
           email,

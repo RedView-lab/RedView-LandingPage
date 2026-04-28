@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
+const DEMO_URL = `${APP_URL}/?demo=1`;
+
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center">
@@ -25,6 +28,22 @@ export default function Home() {
           >
             Sign Up
           </Link>
+          {/*
+            Demo entry point. Hits the RedView app with `?demo=1` which
+            triggers `isDemoMode()` (src/features/demo) for the entire
+            session. The app then:
+              - skips Supabase auth + subscription gates
+              - locks the basemap to the vector `topographic` style so the
+                Mapbox Raster Tiles SKU is never billed
+              - blocks every project mutation via assertNotDemo() guards in
+                src/lib/projects.ts (defense-in-depth, hardcoded)
+          */}
+          <a
+            href={DEMO_URL}
+            className="border border-border px-6 py-2 text-sm hover:border-foreground transition-colors"
+          >
+            Demo
+          </a>
         </div>
 
         <Link

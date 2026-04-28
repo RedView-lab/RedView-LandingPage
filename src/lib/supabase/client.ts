@@ -1,5 +1,18 @@
 import { createBrowserClient } from "@supabase/ssr";
 
+type BrowserClientOptions = {
+  isSingleton?: boolean;
+  auth?: {
+    autoRefreshToken?: boolean;
+    detectSessionInUrl?: boolean;
+    persistSession?: boolean;
+  };
+  global?: {
+    headers?: Record<string, string>;
+    fetch?: typeof fetch;
+  };
+};
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const SUPABASE_REQUEST_TIMEOUT_MS = 12000;
@@ -100,10 +113,16 @@ async function supabaseFetch(input: RequestInfo | URL, init?: RequestInit): Prom
   throw new Error(buildConnectivityErrorMessage(url));
 }
 
-export function createClient() {
-  return createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    global: {
-      fetch: supabaseFetch,
-    },
-  });
+export function createClient(options?: BrowserClientOptions) {
+  return createBrowserClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+    {
+      ...options,
+      global: {
+        ...options?.global,
+        fetch: supabaseFetch,
+      },
+    } as never
+  );
 }
