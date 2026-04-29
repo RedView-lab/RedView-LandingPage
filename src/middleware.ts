@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { supabaseServerFetch } from "@/lib/supabase/fetch";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -10,6 +11,9 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      global: {
+        fetch: supabaseServerFetch,
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -30,8 +34,13 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refreshing the auth token — reject if session is invalid on protected routes
-  const { error } = await supabase.auth.getUser();
-  if (error) {
+  try {
+    const { error } = await supabase.auth.getUser();
+    if (error) {
+      const loginUrl = new URL("/auth/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  } catch {
     const loginUrl = new URL("/auth/login", request.url);
     return NextResponse.redirect(loginUrl);
   }

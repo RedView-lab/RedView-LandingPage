@@ -17,13 +17,17 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
 
   if (code) {
-    const supabase = await createClient();
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    const accessToken = data.session?.access_token;
-    const refreshToken = data.session?.refresh_token;
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      const accessToken = data.session?.access_token;
+      const refreshToken = data.session?.refresh_token;
 
-    if (!error && accessToken && refreshToken) {
-      return NextResponse.redirect(buildAppAuthRedirectUrl(accessToken, refreshToken));
+      if (!error && accessToken && refreshToken) {
+        return NextResponse.redirect(buildAppAuthRedirectUrl(accessToken, refreshToken));
+      }
+    } catch (error) {
+      console.error("Supabase auth callback failed", error);
     }
   }
 

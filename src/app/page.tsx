@@ -13,19 +13,35 @@ function buildAppAuthRedirectUrl(accessToken: string, refreshToken: string): str
   return `${APP_URL}#${params.toString()}`;
 }
 
-export default async function Home() {
+async function getAuthenticatedSession() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (user) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return null;
+    }
+
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    const accessToken = session?.access_token;
-    const refreshToken = session?.refresh_token;
+    return session ?? null;
+  } catch (error) {
+    console.error("Failed to resolve Supabase session on landing page", error);
+    return null;
+  }
+}
+
+export default async function Home() {
+  const session = await getAuthenticatedSession();
+
+  if (session) {
+    const accessToken = session.access_token;
+    const refreshToken = session.refresh_token;
 
     if (accessToken && refreshToken) {
       redirect(buildAppAuthRedirectUrl(accessToken, refreshToken));
