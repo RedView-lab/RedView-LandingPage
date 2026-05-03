@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LandingPage } from "@/features/landing/components/page/LandingPage";
+import { getLandingPageData } from "@/features/landing/api/get-landing-page-data";
 import { createClient } from "@/lib/supabase/server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
@@ -50,39 +51,9 @@ export default async function Home() {
     redirect(APP_URL);
   }
 
+  const landingPageData = await getLandingPageData();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center">
-      <main className="flex flex-col items-center gap-8">
-        <h1 className="text-4xl font-semibold tracking-tight">
-          RedView
-        </h1>
-
-        <p className="text-muted text-sm max-w-xs text-center">
-          High-resolution 3D terrain, LiDAR, and activity analysis platform.
-        </p>
-
-        <div className="flex gap-3">
-          <Link
-            href="/auth/login"
-            className="bg-foreground text-background px-6 py-2 text-sm hover:opacity-80 transition-opacity"
-          >
-            Login
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="border border-border px-6 py-2 text-sm hover:border-foreground transition-colors"
-          >
-            Sign Up
-          </Link>
-        </div>
-
-        <Link
-          href="/pricing"
-          className="text-muted text-sm hover:text-foreground transition-colors"
-        >
-          View pricing →
-        </Link>
-      </main>
-    </div>
+    <LandingPage content={landingPageData} />
   );
 }

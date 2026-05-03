@@ -1,0 +1,1 @@
+export { LandingFeedbackFooter } from "./LandingFeedbackFooter";

@@ -25,15 +25,17 @@ export function useSubscription(
   });
 
   useEffect(() => {
-    let cancelled = false;
+    let isMounted = true;
 
     if (!userId) {
-      setState({
-        isSubscribed: false,
-        isLoading: false,
-        status: null,
-        currentPeriodEnd: null,
-      });
+      if (isMounted) {
+        setState({
+          isSubscribed: false,
+          isLoading: false,
+          status: null,
+          currentPeriodEnd: null,
+        });
+      }
       return;
     }
 

@@ -1,0 +1,415 @@
+.section {
+  display: grid;
+  gap: 12px;
+}
+
+.banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1890 / 141;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bannerImage {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 1200ms var(--motion-ease-standard), filter 280ms ease;
+}
+
+.section:hover .bannerImage {
+  transform: scale(1.018);
+  filter: saturate(1.03);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 520px minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.introCard,
+.planCard,
+.enterpriseCard {
+  border-radius: 8px;
+  backdrop-filter: blur(60px);
+}
+
+.introCard {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  animation: card-enter 520ms cubic-bezier(0.2, 1, 0.22, 1) both;
+  transition: transform 240ms var(--motion-ease-standard), background 220ms ease, box-shadow 220ms ease;
+}
+
+.introTitle {
+  max-width: 408px;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  font-size: clamp(2.5rem, 4vw, 3.75rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(220px, 0.9fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.planCard,
+.enterpriseCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  animation: card-enter 540ms cubic-bezier(0.2, 1, 0.22, 1) both;
+  animation-delay: calc(var(--pricing-card-index, 0) * 80ms + 70ms);
+  transition: transform 240ms var(--motion-ease-standard), background 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.introCard:hover,
+.planCard:hover,
+.planCard:focus-within,
+.enterpriseCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.18);
+}
+
+.introCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.planCard:hover,
+.planCard:focus-within,
+.enterpriseCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.planCardContent,
+.enterpriseCardContent {
+  display: grid;
+  gap: 16px;
+}
+
+.planCardHeader {
+  display: grid;
+  gap: 16px;
+}
+
+.planHeadingBlock {
+  display: grid;
+  gap: 24px;
+}
+
+.planName {
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.planPrice {
+  margin: 0;
+  display: grid;
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.planBadgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.planBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.planCard:hover .planBadge,
+.planCard:focus-within .planBadge,
+.enterpriseCard:hover .planBadge {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.planDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.planFeatureGroups {
+  display: grid;
+  gap: 16px;
+}
+
+.featureGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.featureGroupToggle {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--pricing-feature-color);
+  color: #ffffff;
+  backdrop-filter: blur(60px);
+  cursor: pointer;
+  transition: transform 180ms ease, filter 180ms ease, box-shadow 220ms ease;
+}
+
+.featureGroupToggle:hover,
+.featureGroupToggle:focus-visible {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  outline: none;
+}
+
+.featureGroupToggle:active {
+  transform: translateY(0) scale(0.992);
+}
+
+.featureGroupIcon,
+.featureGroupItemIcon {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+
+.featureGroupLabel,
+.featureGroupItemLabel {
+  min-width: 0;
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.featureGroupLabel {
+  font-size: 1.125rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+.featureGroupGlyph {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  justify-self: center;
+}
+
+.featureGroupGlyphHorizontal,
+.featureGroupGlyphVertical {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 1.5px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.featureGroupGlyphVertical {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.featureGroupGlyph[data-expanded="true"] .featureGroupGlyphVertical {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scaleX(0.2);
+}
+
+.featureGroupBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.2, 1, 0.22, 1);
+}
+
+.featureGroup[data-expanded="true"] .featureGroupBody {
+  grid-template-rows: 1fr;
+}
+
+.featureGroupBodyInner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: 8px;
+}
+
+.featureGroupItem {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 220ms ease, transform 260ms ease, background 180ms ease;
+}
+
+.featureGroup[data-expanded="true"] .featureGroupItem {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.featureGroupItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(2px);
+}
+
+.featureGroupItemLabel {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.planButton {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #890000;
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  transition: filter 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.planButton:hover,
+.planButton:focus-visible {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(137, 0, 0, 0.24);
+  outline: none;
+}
+
+.planButton:active {
+  transform: translateY(0) scale(0.988);
+}
+
+.enterpriseCopy {
+  max-width: 246px;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-landing), sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1500px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .enterpriseCopy {
+    max-width: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    gap: 10px;
+  }
+
+  .banner {
+    aspect-ratio: 4 / 1;
+  }
+
+  .introCard,
+  .planCard,
+  .enterpriseCard {
+    padding: 10px;
+  }
+
+  .introTitle {
+    max-width: none;
+    font-size: 2rem;
+  }
+
+  .planPrice {
+    font-size: 1.75rem;
+  }
+
+  .planFeatureGroups {
+    gap: 10px;
+  }
+
+  .featureGroupToggle {
+    gap: 8px;
+  }
+
+  .featureGroupLabel {
+    font-size: 1rem;
+  }
+
+  .featureGroupItemLabel {
+    font-size: 0.95rem;
+  }
+}
