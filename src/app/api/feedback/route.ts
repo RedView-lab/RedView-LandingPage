@@ -20,13 +20,21 @@ const DEFAULT_RESEND_FROM = "RedView Feedback <onboarding@resend.dev>";
 export const runtime = "nodejs";
 
 function getRequiredEnv(name: string) {
-  const value = process.env[name]?.trim();
+  const value = normalizeEnvValue(process.env[name]);
 
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);
   }
 
   return value;
+}
+
+function normalizeEnvValue(value: string | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  return value.trim().replace(/^['\"]+|['\"]+$/g, "");
 }
 
 function getTextField(formData: FormData, name: string) {
@@ -153,8 +161,8 @@ async function getAttachments(formData: FormData) {
 export async function POST(request: Request) {
   try {
     const resend = new Resend(getRequiredEnv("RESEND_API_KEY"));
-    const from = process.env.FEEDBACK_EMAIL_FROM?.trim() || DEFAULT_RESEND_FROM;
-    const to = process.env.FEEDBACK_EMAIL_TO?.trim() || FEEDBACK_RECIPIENT;
+    const from = normalizeEnvValue(process.env.FEEDBACK_EMAIL_FROM) || DEFAULT_RESEND_FROM;
+    const to = normalizeEnvValue(process.env.FEEDBACK_EMAIL_TO) || FEEDBACK_RECIPIENT;
     const formData = await request.formData();
 
     const firstName = getTextField(formData, "firstName");
