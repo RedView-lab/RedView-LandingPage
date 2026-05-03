@@ -27,6 +27,7 @@ The signup page now uses Supabase's native passwordless e-mail OTP flow for the 
 2. In the Magic Link template, use `{{ .Token }}` instead of `{{ .ConfirmationURL }}` if you want a numeric OTP e-mail instead of a link.
 3. In `Authentication > Providers > Email`, keep e-mail auth enabled and configure the OTP expiry if needed.
 4. The signup page calls `signInWithOtp()` and then `verifyOtp({ type: 'email' })` directly from the client, then forwards the session into the main RedView app.
+5. If Supabase still sends a confirmation link instead of a 6-digit code, the template is still using `{{ .ConfirmationURL }}` somewhere.
 
 Implementation notes:
 
