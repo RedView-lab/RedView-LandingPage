@@ -37,7 +37,7 @@ export const LANDING_PAGE_CONTENT: LandingPageData = {
       },
       {
         label: "Utiliser RedView",
-        href: "/auth/signup",
+        href: "/auth/login",
         variant: "primary",
       },
     ],

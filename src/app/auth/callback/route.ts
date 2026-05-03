@@ -1,20 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173";
-
-function buildAppAuthRedirectUrl(accessToken: string, refreshToken: string): string {
-  const params = new URLSearchParams({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
-
-  return `${APP_URL}#${params.toString()}`;
-}
+import { buildAppAuthRedirectUrl } from "@/lib/supabase/auth";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const providerError = searchParams.get("error") || searchParams.get("error_description");
+
+  if (providerError) {
+    return NextResponse.redirect(`${origin}/auth/login?error=oauth_provider_error`);
+  }
 
   if (code) {
     try {
