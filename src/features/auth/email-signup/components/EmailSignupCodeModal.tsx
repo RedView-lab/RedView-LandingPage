@@ -7,6 +7,7 @@ type EmailSignupCodeModalProps = {
   email: string;
   isOpen: boolean;
   code: string[];
+  codeLengthLabel: string;
   error: string | null;
   info: string | null;
   isSubmitting: boolean;
@@ -44,6 +45,7 @@ export function EmailSignupCodeModal({
   email,
   isOpen,
   code,
+  codeLengthLabel,
   error,
   info,
   isSubmitting,
@@ -154,7 +156,7 @@ export function EmailSignupCodeModal({
         </div>
 
         <div className="px-6 pb-6 pt-5">
-          <div className="flex gap-3">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
             {code.map((digit, index) => {
               const isFocusedDigit = !digit && joinedCode.length === index;
 
@@ -172,12 +174,16 @@ export function EmailSignupCodeModal({
                   onKeyDown={(event) => handleKeyDown(index, event)}
                   onPaste={handlePaste}
                   aria-label={`Verification code digit ${index + 1}`}
-                  className="h-20 min-w-0 flex-1 rounded-[12px] border-2 border-white/40 bg-white/7 text-center font-[var(--font-landing)] text-[48px] font-medium tracking-[-0.02em] text-white outline-none shadow-[0_1px_2px_rgba(10,13,18,0.05)] transition"
+                  className="h-20 min-w-0 rounded-[12px] border-2 border-white/40 bg-white/7 text-center font-[var(--font-landing)] text-[48px] font-medium tracking-[-0.02em] text-white outline-none shadow-[0_1px_2px_rgba(10,13,18,0.05)] transition"
                   style={isFocusedDigit ? { boxShadow: "0 1px 2px rgba(10,13,18,0.05), 0 0 0 2px #ffffff, 0 0 0 4px #9e77ed" } : undefined}
                 />
               );
             })}
           </div>
+
+          <p className="mt-3 text-[13px] leading-5 text-white/52">
+            Enter the {codeLengthLabel} sent by Supabase.
+          </p>
 
           <p className="mt-2 text-[14px] leading-5 text-white/64">
             Didn&apos;t get a code?{" "}

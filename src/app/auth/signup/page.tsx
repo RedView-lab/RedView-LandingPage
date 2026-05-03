@@ -11,10 +11,15 @@ import {
   GoogleMark,
 } from "@/components/auth/AuthShell";
 import { EmailSignupCodeModal } from "@/features/auth/email-signup/components/EmailSignupCodeModal";
-import { SIGNUP_EMAIL_CODE_LENGTH } from "@/features/auth/email-signup/lib/otp";
-import { buildLandingAuthCallbackUrl, getOAuthErrorMessage } from "@/lib/supabase/auth";
+import {
+  buildAppAuthRedirectUrl,
+  buildLandingAuthCallbackUrl,
+  getOAuthErrorMessage,
+} from "@/lib/supabase/auth";
 
 const AUTH_REQUEST_TIMEOUT_MS = 15000;
+const SUPABASE_EMAIL_OTP_LENGTH = 6;
+const SUPABASE_EMAIL_OTP_RESEND_COOLDOWN_SECONDS = 60;
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -43,12 +48,11 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(false);
   const [codeModalOpen, setCodeModalOpen] = useState(false);
-  const [verificationCode, setVerificationCode] = useState<string[]>(Array.from({ length: SIGNUP_EMAIL_CODE_LENGTH }, () => ""));
+  const [verificationCode, setVerificationCode] = useState<string[]>(Array.from({ length: SUPABASE_EMAIL_OTP_LENGTH }, () => ""));
   const [verificationError, setVerificationError] = useState<string | null>(null);
   const [verificationInfo, setVerificationInfo] = useState<string | null>(null);
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
-  const [requestToken, setRequestToken] = useState<string | null>(null);
   const [resendAvailableAt, setResendAvailableAt] = useState<number | null>(null);
 
   const resendCountdownSeconds = resendAvailableAt
@@ -56,7 +60,7 @@ export default function SignUpPage() {
     : 0;
 
   const resetVerificationState = () => {
-    setVerificationCode(Array.from({ length: SIGNUP_EMAIL_CODE_LENGTH }, () => ""));
+    setVerificationCode(Array.from({ length: SUPABASE_EMAIL_OTP_LENGTH }, () => ""));
     setVerificationError(null);
     setVerificationInfo(null);
   };
@@ -70,36 +74,36 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
-      const response = await withTimeout(
-        fetch("/api/auth/email-signup/request-code", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      const supabase = createClient({
+        isSingleton: false,
+        auth: {
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+          persistSession: false,
+        },
+      });
+      const { error: otpError } = await withTimeout(
+        supabase.auth.signInWithOtp({
+          email,
+          options: {
+            data: {
+              full_name: name,
+            },
+            shouldCreateUser: true,
           },
-          body: JSON.stringify({
-            email,
-            fullName: name,
-          }),
         }),
         AUTH_REQUEST_TIMEOUT_MS,
-        "Signup e-mail code request"
+        "Supabase signup OTP request"
       );
-      const payload = (await response.json()) as {
-        error?: string;
-        expiresAt?: string;
-        requestToken?: string;
-        resendAvailableAt?: string;
-      };
 
-      if (!response.ok) {
-        throw new Error(payload.error ?? "Unable to send the verification code.");
+      if (otpError) {
+        throw otpError;
       }
 
-      setRequestToken(payload.requestToken ?? null);
-      setResendAvailableAt(payload.resendAvailableAt ? new Date(payload.resendAvailableAt).getTime() : null);
+      setResendAvailableAt(Date.now() + SUPABASE_EMAIL_OTP_RESEND_COOLDOWN_SECONDS * 1000);
       resetVerificationState();
       setCodeModalOpen(true);
-      setInfo("We sent a 4-digit verification code to your e-mail.");
+      setInfo("We sent a Supabase verification code to your e-mail.");
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -117,34 +121,35 @@ export default function SignUpPage() {
     setResendLoading(true);
 
     try {
-      const response = await withTimeout(
-        fetch("/api/auth/email-signup/request-code", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      const supabase = createClient({
+        isSingleton: false,
+        auth: {
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+          persistSession: false,
+        },
+      });
+      const { error: otpError } = await withTimeout(
+        supabase.auth.signInWithOtp({
+          email,
+          options: {
+            data: {
+              full_name: name,
+            },
+            shouldCreateUser: true,
           },
-          body: JSON.stringify({
-            email,
-            fullName: name,
-          }),
         }),
         AUTH_REQUEST_TIMEOUT_MS,
-        "Signup e-mail code resend"
+        "Supabase signup OTP resend"
       );
-      const payload = (await response.json()) as {
-        error?: string;
-        requestToken?: string;
-        resendAvailableAt?: string;
-      };
 
-      if (!response.ok) {
-        throw new Error(payload.error ?? "Unable to resend the verification code.");
+      if (otpError) {
+        throw otpError;
       }
 
-      setRequestToken(payload.requestToken ?? null);
-      setResendAvailableAt(payload.resendAvailableAt ? new Date(payload.resendAvailableAt).getTime() : null);
+      setResendAvailableAt(Date.now() + SUPABASE_EMAIL_OTP_RESEND_COOLDOWN_SECONDS * 1000);
       resetVerificationState();
-      setVerificationInfo("A fresh 4-digit code was sent to your e-mail.");
+      setVerificationInfo("A fresh Supabase code was sent to your e-mail.");
     } catch (resendError) {
       setVerificationError(
         resendError instanceof Error
@@ -157,15 +162,10 @@ export default function SignUpPage() {
   };
 
   const handleVerifyCode = async () => {
-    if (!requestToken) {
-      setVerificationError("The current verification request expired. Request a new code.");
-      return;
-    }
-
     const joinedCode = verificationCode.join("");
 
-    if (joinedCode.length !== SIGNUP_EMAIL_CODE_LENGTH) {
-      setVerificationError("Enter all 4 digits before verifying.");
+    if (joinedCode.length !== SUPABASE_EMAIL_OTP_LENGTH) {
+      setVerificationError(`Enter all ${SUPABASE_EMAIL_OTP_LENGTH} digits before verifying.`);
       return;
     }
 
@@ -174,33 +174,46 @@ export default function SignUpPage() {
     setVerificationLoading(true);
 
     try {
-      const response = await withTimeout(
-        fetch("/api/auth/email-signup/verify-code", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code: joinedCode,
-            email,
-            origin: window.location.origin,
-            requestToken,
-          }),
+      const supabase = createClient({ isSingleton: false });
+      const {
+        data: { session },
+        error: verifyError,
+      } = await withTimeout(
+        supabase.auth.verifyOtp({
+          email,
+          token: joinedCode,
+          type: "email",
         }),
         AUTH_REQUEST_TIMEOUT_MS,
-        "Signup e-mail code verification"
+        "Supabase signup OTP verification"
       );
-      const payload = (await response.json()) as {
-        actionLink?: string;
-        error?: string;
-      };
 
-      if (!response.ok || !payload.actionLink) {
-        throw new Error(payload.error ?? "Unable to verify the code.");
+      if (verifyError) {
+        throw verifyError;
+      }
+
+      if (!session?.access_token || !session.refresh_token) {
+        throw new Error("Supabase verified the code but did not return a usable session.");
+      }
+
+      if (name.trim()) {
+        const { error: updateUserError } = await withTimeout(
+          supabase.auth.updateUser({
+            data: {
+              full_name: name.trim(),
+            },
+          }),
+          AUTH_REQUEST_TIMEOUT_MS,
+          "Supabase user metadata update"
+        );
+
+        if (updateUserError) {
+          throw updateUserError;
+        }
       }
 
       setVerificationInfo("Code verified. Finishing your signup...");
-      window.location.href = payload.actionLink;
+      window.location.href = buildAppAuthRedirectUrl(session.access_token, session.refresh_token);
     } catch (verifyError) {
       setVerificationError(
         verifyError instanceof Error ? verifyError.message : "Unable to verify the code."
@@ -241,7 +254,7 @@ export default function SignUpPage() {
       <AuthShell
         mode="signup"
         title="Create an account"
-        subtitle="Start your 30-day free trial with Google or a 4-digit e-mail code."
+        subtitle="Start your 30-day free trial with Google or a Supabase e-mail code."
         footerAction={
           <Link href="/auth/login" className="transition-opacity hover:opacity-80">
             Already verified? Continue to Log in
@@ -299,6 +312,7 @@ export default function SignUpPage() {
         email={email}
         isOpen={codeModalOpen}
         code={verificationCode}
+        codeLengthLabel={`${SUPABASE_EMAIL_OTP_LENGTH}-digit code`}
         error={verificationError}
         info={verificationInfo}
         isSubmitting={verificationLoading}
