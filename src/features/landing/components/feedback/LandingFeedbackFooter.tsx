@@ -56,10 +56,10 @@ export function LandingFeedbackFooter() {
           <article className={styles.bodyCard}>
             <p className={styles.copy}>{content.communityDescription}</p>
 
-            <a className={styles.chip} href={content.feedbackHref}>
+            <Link className={styles.chip} href={content.feedbackHref}>
               <PlayCircleIcon />
               <span>{content.feedbackLabel}</span>
-            </a>
+            </Link>
           </article>
         </div>
 

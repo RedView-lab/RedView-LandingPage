@@ -18,6 +18,7 @@ Create `.env.local` from `.env.example` and set:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `NEXT_PUBLIC_APP_URL`: final destination after the auth exchange. In local development this is usually the main RedView app, for example `http://localhost:5173`.
 - `SUPABASE_SERVICE_ROLE_KEY`: required by server routes that create checkout sessions and other admin-side operations.
+- `FEEDBACK_SMTP_HOST`, `FEEDBACK_SMTP_PORT`, `FEEDBACK_SMTP_USER`, `FEEDBACK_SMTP_PASS`, `FEEDBACK_EMAIL_FROM`: required by `/formulaire` to send submissions to `redview.app@proton.me`.
 
 ## E-mail Signup Code Flow
 
