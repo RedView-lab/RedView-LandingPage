@@ -293,7 +293,7 @@ export function LandingFeedbackFormPage() {
               className="h-auto w-[102px]"
               height={29}
               priority
-              src="/landing/header/redview-logo.png"
+              src="/landing/icons/redview-logo.svg"
               width={125}
             />
           </Link>

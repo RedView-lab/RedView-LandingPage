@@ -15,7 +15,7 @@ type CountrySelectFieldProps = {
   onChange: (value: string) => void;
 };
 
-const FLAG_BASE_PATH = "/landing/svg/pays";
+const FLAG_BASE_PATH = "/landing/svg";
 const TRIGGER_CLASSNAME =
   "flex h-10 w-full items-center justify-between rounded-[8px] border border-[rgba(213,215,218,0.16)] bg-white/8 px-3 text-left text-[16px] leading-6 text-white shadow-[0_1px_2px_rgba(10,13,18,0.05)] outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-white/10 focus-visible:border-white/28 focus-visible:bg-white/10 focus-visible:shadow-[0_0_0_3px_rgba(255,255,255,0.06)]";
 
@@ -37,11 +37,11 @@ function CheckIcon() {
 
 function CountryFlag({ country }: { country: CountryOption }) {
   return (
-    <div className="overflow-hidden rounded-[2px] border border-white/10 bg-black/20">
+    <div className="size-5 overflow-hidden rounded-full border border-white/10 bg-black/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]">
       <Image
         alt={`Drapeau ${country.value}`}
-        className="h-[14px] w-5 object-cover"
-        height={14}
+        className="size-full object-cover"
+        height={20}
         src={`${FLAG_BASE_PATH}/${country.flagCode}.svg`}
         unoptimized
         width={20}

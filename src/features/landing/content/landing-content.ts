@@ -5,7 +5,7 @@ export const LANDING_PAGE_CONTENT: LandingPageData = {
     brand: {
       label: "RedView",
       href: "/",
-      logoSrc: "/landing/header/redview-logo.png",
+      logoSrc: "/landing/icons/redview-logo.svg",
     },
     navigation: [
       {

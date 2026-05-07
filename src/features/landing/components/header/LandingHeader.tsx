@@ -12,16 +12,7 @@ type LandingHeaderProps = {
 
 function PlayCircleIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      className={styles.actionIcon}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8.2 6.9L13.1 10L8.2 13.1V6.9Z" fill="currentColor" />
-    </svg>
+    <Image alt="" aria-hidden="true" className={styles.actionIcon} height={20} src="/landing/icons/feedback-play.svg" unoptimized width={20} />
   );
 }
 

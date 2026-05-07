@@ -5,28 +5,19 @@ import styles from "./LandingFeedbackFooter.module.css";
 
 function PlayCircleIcon() {
   return (
-    <svg aria-hidden="true" className={styles.chipIcon} fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8.2 6.9L13.1 10L8.2 13.1V6.9Z" fill="currentColor" />
-    </svg>
+    <Image alt="" aria-hidden="true" className={styles.chipIcon} height={20} src="/landing/icons/feedback-play.svg" unoptimized width={20} />
   );
 }
 
 function MailIcon() {
   return (
-    <svg aria-hidden="true" className={styles.chipIcon} fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3.5 5.5H16.5V14.5H3.5V5.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M4.5 6.5L10 10.75L15.5 6.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-    </svg>
+    <Image alt="" aria-hidden="true" className={styles.chipIcon} height={20} src="/landing/icons/email.svg" unoptimized width={20} />
   );
 }
 
 function VerifiedBadgeIcon() {
   return (
-    <svg aria-hidden="true" className={styles.chipIcon} fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M7 10.2L9.1 12.3L13.4 8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
-    </svg>
+    <Image alt="" aria-hidden="true" className={styles.chipIcon} height={20} src="/landing/icons/instagram-verified.svg" unoptimized width={20} />
   );
 }
 
@@ -89,7 +80,7 @@ export function LandingFeedbackFooter() {
       <footer className={styles.footerBar}>
         <div className={styles.footerBrandBlock}>
           <Link aria-label="RedView" className={styles.footerBrand} href="/">
-            <Image alt="RedView" className={styles.footerLogo} height={24} src="/landing/header/redview-logo.png" unoptimized width={125} />
+            <Image alt="RedView" className={styles.footerLogo} height={24} src="/landing/icons/redview-logo.svg" unoptimized width={125} />
           </Link>
 
           <nav aria-label="Navigation du pied de page" className={styles.footerNav}>

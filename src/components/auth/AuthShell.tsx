@@ -41,7 +41,7 @@ export function AuthShell({ mode, title, subtitle, children, footerAction }: Aut
       <header className="mx-auto flex h-[72px] w-full max-w-[1600px] items-center justify-between gap-6">
         <Link href="/" aria-label="RedView home" className="shrink-0 transition-opacity hover:opacity-80">
           <Image
-            src="/landing/header/redview-logo.png"
+            src="/landing/icons/redview-logo.svg"
             alt="RedView"
             width={125}
             height={29}

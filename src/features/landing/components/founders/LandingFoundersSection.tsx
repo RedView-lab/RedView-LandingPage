@@ -10,16 +10,7 @@ import styles from "./LandingFoundersSection.module.css";
 
 function VerifiedBadgeIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      className={styles.socialIcon}
-      fill="none"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="10" cy="10" fill="rgba(255,255,255,0.08)" r="8.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M7 10.2L9.1 12.3L13.4 8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
-    </svg>
+    <Image alt="" aria-hidden="true" className={styles.socialIcon} height={20} src="/landing/icons/instagram-verified.svg" unoptimized width={20} />
   );
 }
 
