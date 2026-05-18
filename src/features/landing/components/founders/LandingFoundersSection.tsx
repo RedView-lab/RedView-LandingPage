@@ -35,10 +35,16 @@ function FounderCard({ founder }: { founder: LandingFounderProfile }) {
         <h3 className={styles.founderName}>{founder.name}</h3>
         <p className={styles.founderBio}>{founder.bio}</p>
 
-        <div aria-label={`${founder.name} sur ${founder.socialLabel}`} className={styles.socialBadge}>
+        <a
+          aria-label={`${founder.name} sur ${founder.socialLabel}`}
+          className={styles.socialBadge}
+          href={founder.socialHref}
+          rel="noreferrer"
+          target="_blank"
+        >
           <VerifiedBadgeIcon />
           <span className={styles.socialLabel}>{founder.socialLabel}</span>
-        </div>
+        </a>
       </div>
     </article>
   );
@@ -72,11 +78,9 @@ export function LandingFoundersSection() {
           </article>
         </div>
 
-        <div className={styles.profilesGrid}>
-          {LANDING_FOUNDER_PROFILES.map((founder) => (
-            <FounderCard founder={founder} key={founder.name} />
-          ))}
-        </div>
+        {LANDING_FOUNDER_PROFILES.map((founder) => (
+          <FounderCard founder={founder} key={founder.name} />
+        ))}
       </div>
     </section>
   );

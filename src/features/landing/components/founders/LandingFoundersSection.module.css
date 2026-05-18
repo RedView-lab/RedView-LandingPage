@@ -5,7 +5,7 @@
 
 .personaRail {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(240px, 1fr));
   gap: 12px;
 }
 
@@ -19,15 +19,15 @@
 
 .personaPill {
   display: flex;
-  min-height: 76px;
+  min-height: 140px;
   align-items: flex-end;
-  padding: 12px;
+  padding: 12px 12px 24px;
   background: var(--persona-color);
   color: #ffffff;
   font-family: var(--font-landing), sans-serif;
-  font-size: clamp(1.2rem, 1.8vw, 2rem);
+  font-size: 32px;
   font-weight: 400;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.96px;
   line-height: 1;
   transition: transform 220ms var(--motion-ease-standard), filter 220ms ease, box-shadow 220ms ease;
 }
@@ -40,17 +40,25 @@
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
 }
 
 .storyColumn,
-.profilesGrid,
 .founderCard {
   display: grid;
   gap: 12px;
   min-width: 0;
+}
+
+.storyColumn,
+.founderCard {
+  min-height: 780px;
+}
+
+.storyColumn {
+  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 
 .storyHeadlineCard,
@@ -61,7 +69,7 @@
 }
 
 .storyHeadlineCard {
-  min-height: 312px;
+  min-height: 0;
   padding: 12px;
   background: rgba(255, 255, 255, 0.04);
 }
@@ -73,34 +81,28 @@
 }
 
 .storyTitle {
-  max-width: 12ch;
   margin: 0;
   color: #ffffff;
   font-family: var(--font-landing), sans-serif;
-  font-size: clamp(2.8rem, 4.7vw, 4rem);
+  font-size: 60px;
   font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 0.92;
+  letter-spacing: -1.8px;
+  line-height: 1;
 }
 
 .storyCopy {
-  max-width: 35rem;
+  max-width: 612px;
   margin: 0;
   color: rgba(255, 255, 255, 0.92);
   font-family: var(--font-landing), sans-serif;
-  font-size: clamp(1rem, 1.3vw, 1.1875rem);
+  font-size: 19px;
   font-weight: 400;
-  line-height: 1.45;
-}
-
-.profilesGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
+  line-height: normal;
 }
 
 .founderCard {
   height: 100%;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   transition: transform 240ms var(--motion-ease-standard);
 }
 
@@ -112,7 +114,6 @@
   position: relative;
   overflow: hidden;
   min-height: 0;
-  aspect-ratio: 486 / 313;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.08);
   transition: box-shadow 240ms ease;
@@ -159,19 +160,19 @@
   margin: 0;
   color: #ffffff;
   font-family: var(--font-landing), sans-serif;
-  font-size: clamp(2rem, 2.6vw, 2.5rem);
+  font-size: 40px;
   font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 0.92;
+  letter-spacing: -1.2px;
+  line-height: 0.9;
 }
 
 .founderBio {
   margin: 0;
   color: rgba(255, 255, 255, 0.92);
   font-family: var(--font-landing), sans-serif;
-  font-size: clamp(0.96rem, 1.06vw, 1.1875rem);
+  font-size: 19px;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: normal;
 }
 
 .socialBadge {
@@ -223,32 +224,33 @@
     grid-template-columns: 1fr;
   }
 
-  .storyHeadlineCard {
+  .storyColumn,
+  .founderCard {
     min-height: 0;
   }
 }
 
 @media (max-width: 920px) {
-  .personaRail,
-  .profilesGrid {
+  .personaRail {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-  .personaRail,
-  .profilesGrid {
+  .personaRail {
     grid-template-columns: 1fr;
   }
 
   .personaPill {
     min-height: 64px;
     font-size: 1.45rem;
+    letter-spacing: -0.03em;
+    padding: 12px;
   }
 
   .storyTitle {
-    max-width: none;
     font-size: 2.4rem;
+    letter-spacing: -0.03em;
   }
 
   .photoCard {
@@ -257,5 +259,12 @@
 
   .founderName {
     font-size: 1.8rem;
+    letter-spacing: -0.03em;
+  }
+
+  .storyCopy,
+  .founderBio {
+    font-size: 1rem;
+    line-height: 1.45;
   }
 }

@@ -40,8 +40,8 @@ export function LandingHero({ content }: LandingHeroProps) {
           <span>{normalizedContent.headline.prefix} </span>
           <strong className={styles.titleEmphasis}>{normalizedContent.headline.emphasis}</strong>
         </h1>
+        <div className={styles.badge}>{normalizedContent.badge}</div>
       </div>
-      <div className={styles.badge}>{normalizedContent.badge}</div>
     </section>
   );
 }

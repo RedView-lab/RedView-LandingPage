@@ -14,11 +14,6 @@ export const LANDING_PAGE_CONTENT: LandingPageData = {
         href: "#fonctionnalites",
       },
       {
-        id: "offres",
-        label: "Offres",
-        href: "#offres",
-      },
-      {
         id: "apropos",
         label: "À propos",
         href: "#apropos",
@@ -32,7 +27,7 @@ export const LANDING_PAGE_CONTENT: LandingPageData = {
     actions: [
       {
         label: "Voir les offres",
-        href: "/pricing",
+        href: "#offres",
         variant: "ghost",
       },
       {
