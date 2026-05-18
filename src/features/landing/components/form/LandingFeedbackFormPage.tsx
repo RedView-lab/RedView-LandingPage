@@ -10,7 +10,7 @@ import {
   type DragEvent,
   type FormEvent,
 } from "react";
-import { CountrySelectField, type CountryOption } from "@/features/landing/components/form/CountrySelectField";
+import { CountrySelectField, TextSelectField, type CountryOption } from "@/features/landing/components/form/select";
 
 type SportEntry = {
   id: string;
@@ -47,7 +47,6 @@ const COUNTRY_FIELD_OPTIONS: CountryOption[] = [
 
 const INPUT_CLASSNAME =
   "h-10 w-full rounded-[8px] border border-[rgba(213,215,218,0.16)] bg-white/8 px-3 text-[16px] leading-6 text-white shadow-[0_1px_2px_rgba(10,13,18,0.05)] outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-white/40 hover:bg-white/10 focus:border-white/28 focus:bg-white/10 focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)]";
-const SELECT_CLASSNAME = `${INPUT_CLASSNAME} appearance-none pr-10`;
 
 function createSportEntry(index: number, withDefaults = false): SportEntry {
   return {
@@ -56,14 +55,6 @@ function createSportEntry(index: number, withDefaults = false): SportEntry {
     level: withDefaults ? "Debutant" : "",
     annualDistance: withDefaults ? "500km" : "",
   };
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 20 20">
-      <path d="M6 8L10 12L14 8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-    </svg>
-  );
 }
 
 function MailIcon() {
@@ -117,17 +108,6 @@ function FieldWrapper({ label, htmlFor, required = false, hint, help = false, ch
 
 function InputShell({ children }: { children: React.ReactNode }) {
   return <div className="relative w-full">{children}</div>;
-}
-
-function SelectField(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <InputShell>
-      <select {...props} className={`${SELECT_CLASSNAME} ${props.className ?? ""}`.trim()} />
-      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-white/64">
-        <ChevronDownIcon />
-      </span>
-    </InputShell>
-  );
 }
 
 export function LandingFeedbackFormPage() {
@@ -374,33 +354,23 @@ export function LandingFeedbackFormPage() {
                 {sports.map((sportEntry, index) => (
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3" key={sportEntry.id}>
                     <FieldWrapper htmlFor={`sport-${sportEntry.id}`} label={`Sport ${index + 1}`}>
-                      <SelectField
+                      <TextSelectField
                         id={`sport-${sportEntry.id}`}
-                        onChange={(event) => handleSportChange(sportEntry.id, "sport", event.target.value)}
+                        onChange={(nextValue) => handleSportChange(sportEntry.id, "sport", nextValue)}
+                        options={SPORT_OPTIONS}
+                        placeholder="Choisir un sport"
                         value={sportEntry.sport}
-                      >
-                        <option value="">Choisir un sport</option>
-                        {SPORT_OPTIONS.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </SelectField>
+                      />
                     </FieldWrapper>
 
                     <FieldWrapper htmlFor={`level-${sportEntry.id}`} label="Level">
-                      <SelectField
+                      <TextSelectField
                         id={`level-${sportEntry.id}`}
-                        onChange={(event) => handleSportChange(sportEntry.id, "level", event.target.value)}
+                        onChange={(nextValue) => handleSportChange(sportEntry.id, "level", nextValue)}
+                        options={LEVEL_OPTIONS}
+                        placeholder="Choisir un niveau"
                         value={sportEntry.level}
-                      >
-                        <option value="">Choisir un niveau</option>
-                        {LEVEL_OPTIONS.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </SelectField>
+                      />
                     </FieldWrapper>
 
                     <FieldWrapper htmlFor={`annualDistance-${sportEntry.id}`} label="Moyenne annuelle">
@@ -439,13 +409,7 @@ export function LandingFeedbackFormPage() {
               <div className="flex min-w-0 flex-col gap-6 py-4">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <FieldWrapper htmlFor="feature" label="Fonctionalite concernee">
-                    <SelectField id="feature" onChange={(event) => setFeature(event.target.value)} value={feature}>
-                      {FEATURE_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </SelectField>
+                    <TextSelectField id="feature" onChange={setFeature} options={FEATURE_OPTIONS} value={feature} />
                   </FieldWrapper>
 
                   <FieldWrapper htmlFor="issueType" label="Type de probleme">
