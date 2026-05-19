@@ -13,6 +13,7 @@ import {
 } from "@/components/auth/AuthShell";
 import {
   buildLandingAuthCallbackUrl,
+  getEmailAuthErrorMessage,
   getOAuthErrorMessage,
 } from "@/lib/supabase/auth";
 
@@ -90,11 +91,7 @@ export default function SignUpPage() {
 
       router.push(`/auth/signup/verify?${params.toString()}`);
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Unable to send the verification code. Please try again."
-      );
+      setError(getEmailAuthErrorMessage(requestError, "Unable to send the verification code. Please try again."));
     } finally {
       setLoading(false);
     }

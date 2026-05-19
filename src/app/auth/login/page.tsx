@@ -14,6 +14,7 @@ import {
   buildAppAuthRedirectUrl,
   buildLandingAuthCallbackUrl,
   getAuthCallbackErrorMessage,
+  getEmailAuthErrorMessage,
   getOAuthErrorMessage,
 } from "@/lib/supabase/auth";
 
@@ -157,11 +158,7 @@ export default function LoginPage() {
 
       setInfo("A one-time sign-in link has been sent to your email.");
     } catch (otpError) {
-      setError(
-        otpError instanceof Error
-          ? otpError.message
-          : "Unable to send the one-time email. Please try again."
-      );
+      setError(getEmailAuthErrorMessage(otpError, "Unable to send the one-time email. Please try again."));
     } finally {
       setMagicLinkLoading(false);
     }

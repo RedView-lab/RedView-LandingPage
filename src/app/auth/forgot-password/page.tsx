@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getEmailAuthErrorMessage } from "@/lib/supabase/auth";
 import {
   AuthActionButton,
   AuthField,
@@ -66,11 +67,7 @@ export default function ForgotPasswordPage() {
 
       setMessage("Password reset instructions have been sent to your email.");
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Unable to send reset instructions. Please try again."
-      );
+      setError(getEmailAuthErrorMessage(requestError, "Unable to send reset instructions. Please try again."));
     } finally {
       setLoading(false);
     }

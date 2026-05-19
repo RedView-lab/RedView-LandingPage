@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { EmailSignupCodeScreen } from "@/features/auth/email-signup/components/EmailSignupCodeModal";
-import { buildAppAuthRedirectUrl, buildLandingAuthCallbackUrl } from "@/lib/supabase/auth";
+import {
+  buildAppAuthRedirectUrl,
+  buildLandingAuthCallbackUrl,
+  getEmailAuthErrorMessage,
+} from "@/lib/supabase/auth";
 
 const AUTH_REQUEST_TIMEOUT_MS = 15000;
 const SUPABASE_EMAIL_OTP_LENGTH = 8;
@@ -118,11 +122,7 @@ export function VerifyPageClient() {
       resetVerificationState();
       setVerificationInfo(`A fresh ${SUPABASE_EMAIL_OTP_LABEL} was sent to your e-mail.`);
     } catch (resendError) {
-      setVerificationError(
-        resendError instanceof Error
-          ? resendError.message
-          : "Unable to resend the verification code."
-      );
+      setVerificationError(getEmailAuthErrorMessage(resendError, "Unable to resend the verification code."));
     } finally {
       setResendLoading(false);
     }

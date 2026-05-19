@@ -2,6 +2,7 @@ const DEFAULT_APP_URL = "http://localhost:5173";
 
 const GOOGLE_PROVIDER_DISABLED_PATTERN = /unsupported provider|provider is not enabled/i;
 const OAUTH_REDIRECT_MISMATCH_PATTERN = /redirect(?:_to)?(?: url)?(?: is)? not allowed|invalid redirect|redirect uri mismatch/i;
+const EMAIL_RATE_LIMIT_PATTERN = /email rate limit exceeded|rate limit/i;
 
 export function buildAppAuthRedirectUrl(accessToken: string, refreshToken: string): string {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || DEFAULT_APP_URL;
@@ -28,6 +29,18 @@ export function getOAuthErrorMessage(error: unknown, fallbackMessage: string): s
 
   if (OAUTH_REDIRECT_MISMATCH_PATTERN.test(error.message)) {
     return "Google OAuth rejected the redirect URL. Add the landing callback URL to Supabase and Google Cloud: /auth/callback on your local and production domains.";
+  }
+
+  return error.message;
+}
+
+export function getEmailAuthErrorMessage(error: unknown, fallbackMessage: string): string {
+  if (!(error instanceof Error)) {
+    return fallbackMessage;
+  }
+
+  if (EMAIL_RATE_LIMIT_PATTERN.test(error.message)) {
+    return "Too many e-mails were requested recently. Please wait a minute before trying again.";
   }
 
   return error.message;
