@@ -56,6 +56,8 @@ export function EmailSignupCodeScreen({
 }: EmailSignupCodeScreenProps) {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const joinedCode = code.join("");
+  const digitGridClassName =
+    code.length > 6 ? "grid-cols-4 lg:grid-cols-8" : "grid-cols-3 sm:grid-cols-6";
 
   useEffect(() => {
     const firstEmptyIndex = code.findIndex((digit) => !digit);
@@ -145,7 +147,7 @@ export function EmailSignupCodeScreen({
           </div>
 
           <div className="px-6 pb-6 pt-6 sm:px-8 sm:pb-8">
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            <div className={`grid ${digitGridClassName} gap-3`}>
               {code.map((digit, index) => {
                 const isFocusedDigit = !digit && joinedCode.length === index;
 

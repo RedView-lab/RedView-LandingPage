@@ -7,8 +7,9 @@ import { EmailSignupCodeScreen } from "@/features/auth/email-signup/components/E
 import { buildAppAuthRedirectUrl, buildLandingAuthCallbackUrl } from "@/lib/supabase/auth";
 
 const AUTH_REQUEST_TIMEOUT_MS = 15000;
-const SUPABASE_EMAIL_OTP_LENGTH = 6;
+const SUPABASE_EMAIL_OTP_LENGTH = 8;
 const SUPABASE_EMAIL_OTP_RESEND_COOLDOWN_SECONDS = 60;
+const SUPABASE_EMAIL_OTP_LABEL = `${SUPABASE_EMAIL_OTP_LENGTH}-digit code`;
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -115,7 +116,7 @@ export function VerifyPageClient() {
       setResendAvailableAt(Date.now() + SUPABASE_EMAIL_OTP_RESEND_COOLDOWN_SECONDS * 1000);
       setNow(Date.now());
       resetVerificationState();
-      setVerificationInfo("A fresh 6-digit code was sent to your e-mail.");
+      setVerificationInfo(`A fresh ${SUPABASE_EMAIL_OTP_LABEL} was sent to your e-mail.`);
     } catch (resendError) {
       setVerificationError(
         resendError instanceof Error
@@ -198,13 +199,13 @@ export function VerifyPageClient() {
     <EmailSignupCodeScreen
       email={email || "your inbox"}
       code={verificationCode}
-      codeLengthLabel="6-digit code"
+      codeLengthLabel={SUPABASE_EMAIL_OTP_LABEL}
       error={verificationError}
       info={
         verificationInfo ??
         (email
           ? null
-          : "No signup request is active. Go back and request a new 6-digit code.")
+          : `No signup request is active. Go back and request a new ${SUPABASE_EMAIL_OTP_LABEL}.`)
       }
       isSubmitting={verificationLoading}
       isResending={resendLoading}
