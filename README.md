@@ -24,17 +24,26 @@ Create `.env.local` from `.env.example` and set:
 
 The signup page now uses Supabase's native passwordless e-mail OTP flow for the non-Google path.
 
+Important production constraint:
+
+- Supabase's built-in Auth mailer is not a production mail service.
+- It only delivers to pre-authorized team addresses and is currently limited to 2 e-mails per hour project-wide.
+- That means signup OTP, magic link login and password reset will quickly stop working unless custom SMTP is configured in Supabase.
+
 1. In Supabase Dashboard, open `Authentication > Email Templates`.
 2. In the Magic Link template, use `{{ .Token }}` instead of `{{ .ConfirmationURL }}` if you want a numeric OTP e-mail instead of a link.
 3. In `Authentication > Providers > Email`, keep e-mail auth enabled and configure the OTP expiry if needed.
 4. The signup page calls `signInWithOtp()` and then `verifyOtp({ type: 'email' })` directly from the client, then forwards the session into the main RedView app.
-5. If Supabase still sends a confirmation link instead of a 6-digit code, the template is still using `{{ .ConfirmationURL }}` somewhere.
+5. If Supabase still sends a confirmation link instead of a numeric code, the template is still using `{{ .ConfirmationURL }}` somewhere.
+6. For production, configure `Authentication > SMTP` with a real provider such as Resend, SES, Postmark or SendGrid, then review `Authentication > Rate Limits`.
+7. Add CAPTCHA protection to signup, magic link and password reset flows before opening public signups.
 
 Implementation notes:
 
 - Supabase's e-mail OTP flow is the documented path for passwordless e-mail login. Their docs describe it as a six-digit code by default.
 - No custom SQL table or custom mail sender is required for this signup path anymore.
 - Google OAuth still uses `/auth/callback`; e-mail OTP signup redirects straight to the main app once Supabase returns a session.
+- The repository currently does not implement CAPTCHA on auth forms, so custom SMTP alone is not sufficient hardening for a public launch.
 
 ## Google OAuth Setup
 

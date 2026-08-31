@@ -47,6 +47,9 @@ const COUNTRY_FIELD_OPTIONS: CountryOption[] = [
 
 const INPUT_CLASSNAME =
   "h-10 w-full rounded-[8px] border border-[rgba(213,215,218,0.16)] bg-white/8 px-3 text-[16px] leading-6 text-white shadow-[0_1px_2px_rgba(10,13,18,0.05)] outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-white/40 hover:bg-white/10 focus:border-white/28 focus:bg-white/10 focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)]";
+const MAX_ATTACHMENTS = 4;
+const MAX_ATTACHMENT_BYTES = 4 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_TYPES = new Set(["image/png", "image/jpeg", "image/gif"]);
 
 function createSportEntry(index: number, withDefaults = false): SportEntry {
   return {
@@ -150,7 +153,27 @@ export function LandingFeedbackFormPage() {
       return;
     }
 
-    setFiles(Array.from(selectedFiles));
+    const nextFiles = Array.from(selectedFiles);
+
+    if (nextFiles.length > MAX_ATTACHMENTS) {
+      setSubmitState("error");
+      setSubmitMessage(`Vous pouvez joindre jusqu'a ${MAX_ATTACHMENTS} captures d'ecran.`);
+      return;
+    }
+
+    const invalidFile = nextFiles.find(
+      (file) => !ALLOWED_ATTACHMENT_TYPES.has(file.type) || file.size > MAX_ATTACHMENT_BYTES,
+    );
+
+    if (invalidFile) {
+      setSubmitState("error");
+      setSubmitMessage("Utilisez jusqu'a 4 captures PNG, JPG ou GIF de 4 Mo maximum chacune.");
+      return;
+    }
+
+    setSubmitState("idle");
+    setSubmitMessage(null);
+    setFiles(nextFiles);
   };
 
   const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -261,7 +284,9 @@ export function LandingFeedbackFormPage() {
     }, 4000);
   };
 
-  const uploadCaption = files.length > 0 ? `${files.length} fichier${files.length > 1 ? "s" : ""} selectionne${files.length > 1 ? "s" : ""}` : "SVG, PNG, JPG or GIF (max. 800x400px)";
+  const uploadCaption = files.length > 0
+    ? `${files.length} fichier${files.length > 1 ? "s" : ""} selectionne${files.length > 1 ? "s" : ""}`
+    : "PNG, JPG ou GIF · 4 fichiers max · 4 Mo par fichier";
 
   return (
     <main className="auth-page min-h-screen px-4 pb-20 pt-6 sm:px-8 sm:pb-28 sm:pt-10 xl:px-12">
@@ -469,7 +494,7 @@ export function LandingFeedbackFormPage() {
                   </div>
                 </label>
                 <input
-                  accept="image/png,image/jpeg,image/gif,image/svg+xml"
+                  accept="image/png,image/jpeg,image/gif"
                   className="sr-only"
                   id="screenshots"
                   multiple
